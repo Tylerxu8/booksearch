@@ -2,11 +2,23 @@ const form = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
 const resultsEl = document.querySelector("#results");
 const shelfEl = document.querySelector("#shelf");
+const status = document.querySelector("#status");
 
 const API_URL = "https://openlibrary.org/search.json";
 
 let results = [];
 let shelf = [];
+let debounceTimer = null;
+
+const savedShelf = localStorage.getItem("booksearch-shelf");
+if (savedShelf) {
+  try {
+  	shelf = JSON.parse(savedShelf);
+  } catch {
+  	shelf = [];
+  }
+}
+renderShelf();
 
 function searchUrl(query) {
   return `${API_URL}?q=${encodeURIComponent(query)}`;
@@ -41,15 +53,9 @@ function isOnShelf(shelf, key) {
   return shelf.some((b) => b.key === key);
 }
 
-form.addEventListener("submit", async (event) => {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
-  const query = input.value.trim();
-  if (query === "") return;
-
-  const response = await fetch(searchUrl(query));
-  const data = await response.json();
-  results = data.docs.map(normalizeBook);
-  renderResults();
+  runSearch(input.value.trim());
 });
 
 function renderResults() {
@@ -105,6 +111,40 @@ function renderShelf() {
   	li.append(status, title, removeBtn);
   	shelfEl.appendChild(li);
   }
+  saveShelf();
+}
+
+function saveShelf() {
+  localStorage.setItem("booksearch-shelf", JSON.stringify(shelf));
+}
+
+async function runSearch(query) {
+  if (query === "") {
+  	results = [];
+  	renderResults();
+  	status.textContent = "";
+  	return;
+  }
+
+  status.textContent = "Searching…";
+
+  try {
+  	const response = await fetch(searchUrl(query));
+  	if (!response.ok) throw new Error(`request failed with status ${response.status}`);
+
+  	const data = await response.json();
+  	results = data.docs.map(normalizeBook);
+  	renderResults();
+
+  	status.textContent = results.length === 0
+  	  ? `No books found for "${query}".`
+  	  : "";
+  } catch (error) {
+  	console.error(error);
+  	results = [];
+  	renderResults();
+  	status.textContent = "Something went wrong. Try again.";
+  }
 }
 
 resultsEl.addEventListener("click", (event) => {
@@ -129,6 +169,12 @@ shelfEl.addEventListener("click", (event) => {
   	renderShelf();
   	renderResults();
   }
+});
+
+input.addEventListener("input", (event) => {
+  clearTimeout(debounceTimer);
+  const query = event.target.value.trim();
+  debounceTimer = setTimeout(() => runSearch(query), 300);
 });
 
 console.log({ form, input, results, shelf });
