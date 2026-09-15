@@ -70,3 +70,13 @@ body {
   color: #666;
   margin: 0;
 }
+
+.add-to-shelf {
+  margin-top: auto;
+  padding: 0.35rem;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+}
