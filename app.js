@@ -1,11 +1,16 @@
+import { normalizeBook, addToShelf, removeFromShelf, toggleRead, isOnShelf } from "./books.js";
+
 const form = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
 const resultsEl = document.querySelector("#results");
 const shelfEl = document.querySelector("#shelf");
 const status = document.querySelector("#status");
+const loadMoreBtn = document.querySelector("#load-more");
 
 const API_URL = "https://openlibrary.org/search.json";
 
+let page = 1;
+let lastQuery = "";
 let results = [];
 let shelf = [];
 let debounceTimer = null;
@@ -20,37 +25,8 @@ if (savedShelf) {
 }
 renderShelf();
 
-function searchUrl(query) {
-  return `${API_URL}?q=${encodeURIComponent(query)}`;
-}
-
-function normalizeBook(doc) {
-  return {
-  	key: doc.key,
-  	title: doc.title || "Untitled",
-  	author: doc.author_name ? doc.author_name[0] : "Unkown author",
-  	year: doc.first_publish_year || null,
-  	coverId: doc.cover_i || null,
-  };
-}
-
-function addToShelf(shelf, book, savedAt) {
-  if (shelf.some((b) => b.key === book.key)) return shelf;
-  return [...shelf, { ...book, status: "want", savedAt }];
-}
-
-function removeFromShelf(shelf, key) {
-  return shelf.filter((b) => b.key !== key);
-}
-
-function toggleRead(shelf, key) {
-  return shelf.map((b) =>
-  	b.key === key ? { ...b, status: b.status === "read" ? "want" : "read" } : b
-  );
-}
-
-function isOnShelf(shelf, key) {
-  return shelf.some((b) => b.key === key);
+function searchUrl(query, page) {
+  return `${API_URL}?q=${encodeURIComponent(query)}&page=${page}`;
 }
 
 form.addEventListener("submit", (event) => {
@@ -118,34 +94,45 @@ function saveShelf() {
   localStorage.setItem("booksearch-shelf", JSON.stringify(shelf));
 }
 
-async function runSearch(query) {
+async function runSearch(query, { append = false } = {}) {
   if (query === "") {
   	results = [];
   	renderResults();
   	status.textContent = "";
+  	loadMoreBtn.hidden = true;
   	return;
+  }
+
+  if (!append) {
+  	page = 1;
+  	lastQuery = query;
   }
 
   status.textContent = "Searching…";
 
   try {
-  	const response = await fetch(searchUrl(query));
+  	const response = await fetch(searchUrl(query, page));
   	if (!response.ok) throw new Error(`request failed with status ${response.status}`);
 
   	const data = await response.json();
-  	results = data.docs.map(normalizeBook);
+  	const newBooks = data.docs.map(normalizeBook);
+  	results = append ? [...results, ...newBooks] : newBooks;
   	renderResults();
 
-  	status.textContent = results.length === 0
-  	  ? `No books found for "${query}".`
-  	  : "";
+  	loadMoreBtn.hidden = results.length >= data.numFound;
+  	status.textContent = results.length === 0 ? `No books found for "${query}".` : "";
   } catch (error) {
   	console.error(error);
-  	results = [];
+  	if (!append) results = [];
   	renderResults();
   	status.textContent = "Something went wrong. Try again.";
   }
 }
+
+loadMoreBtn.addEventListener("click", () => {
+  page += 1;
+  runSearch(lastQuery, { append: true });
+});
 
 resultsEl.addEventListener("click", (event) => {
   if (!event.target.matches(".add-to-shelf")) return;
