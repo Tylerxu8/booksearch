@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Book Search</title>
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 	<h1>Book Search</h1>
@@ -13,7 +14,20 @@
 		<button type="submit">Search</button>
 	</form>
 	<section aria-label="Search results">
-		<ul id="results"></ul>
+		<ul id="results">
+		  <li class="card">
+		  	<img src="https://covers.openlibrary.opg/b/id/8231856-M.jpg" alt="">
+		  	<h3>Dune</h3>
+		  	<p>Frank Herbert</p>
+		  	<button type="button" class="add-to-shelf">Add to Shelf</button>
+		  </li>
+		  <li class="card">
+		  	<img src="https://covers.openlibrary.org/b/id/8231857-M.jpg" alt="">
+		  	<h3>Dune Messiah</h3>
+		  	<p>Frank Herbert</p>
+		  	<button type="button" class="add-to-shelf">Add to shelf</button>
+		  </li>
+		</ul>
 	</section>
 	<section aria-label="Your shelf">
 		<h2>My Shelf</h2>
