@@ -8,6 +8,7 @@ const status = document.querySelector("#status");
 const loadMoreBtn = document.querySelector("#load-more");
 
 const API_URL = "https://openlibrary.org/search.json";
+const routes = ["/", "/search", "shelf"];
 
 let page = 1;
 let lastQuery = "";
@@ -24,6 +25,27 @@ if (savedShelf) {
   }
 }
 renderShelf();
+
+function currentRoute() {
+  const hash = window.location.hash.slice(1);
+  return routes.includes(hash) ? hash : "/";
+}
+
+function showRoute() {
+  const route = currentRoute();
+
+  document.querySelectorAll("[data-route]").forEach((el) => {
+    if (el.tagName === "SECTION") {
+      el.hidden = el.dataset.route !== route;
+    } else {
+    	el.classList.toggle("active", el.dataset.route === route);
+    	el.setAttribute("aria-current", el.dataset.route === route ? "page" : "false");
+    }
+  });
+}
+
+window.addEventListener("hashchange", showRoute);
+showRoute();
 
 function searchUrl(query, page) {
   return `${API_URL}?q=${encodeURIComponent(query)}&page=${page}`;
@@ -163,5 +185,3 @@ input.addEventListener("input", (event) => {
   const query = event.target.value.trim();
   debounceTimer = setTimeout(() => runSearch(query), 300);
 });
-
-console.log({ form, input, results, shelf });

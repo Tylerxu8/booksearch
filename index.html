@@ -5,23 +5,35 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Book Search</title>
 	<link rel="stylesheet" href="styles.css">
-	<script type="module" src="app.js"></script>
 </head>
 <body>
+  <header id="app-bar">
 	<h1>Book Search</h1>
-	<form id="search-form">
-		<label for="search-input">Search books</label>
-		<input type="text" id="search-input" name="q" autocomplete="off">
-		<button type="submit">Search</button>
-	</form>
-	<p id="status" aria-live="polite"></p>
-	<section aria-label="Search results">
-		<ul id="results"></ul>
-	</section>
-	<button type="button" id="load-more" hidden>Load more</button>
-	<section aria-label="Your shelf">
-		<h2>My Shelf</h2>
-		<ul id="shelf"></ul>
-	</section>
+  </header>
+  <main>
+  	<section id="view-home" data-route="/">
+  		<p>Home - content arrives tomorrow.</p>
+  	</section>
+  	<section id="view-search" data-route="/search" hidden>
+  		<form id="search-form">
+  			<label for="search-input">Search books</label>
+  			<input type="text" id="search-input" name="q" autocomplete="off">
+  			<button type="submit">Search</button>
+  		</form>
+  		<p id="status" aria-live="polite"></p>
+  		<ul id="results"></ul>
+  		<button type="button" id="load-more" hidden>Load more</button>
+  	</section>
+  	<section id="view-shelf" data-route="/shelf" hidden>
+  		<h2>My shelf</h2>
+  		<ul id="shelf"></ul>
+  	</section>
+  </main>
+	<nav id="tab-bar" aria-label="Primary">
+		<a href="#/" class="tab" data-route="/">Home</a>
+		<a href="#/search" class="tab" data-route="/search">Search</a>
+		<a href="#/shelf" class="tab" data-route="/shelf">Shelf</a>
+	</nav>
+	<script type="module" src="app.js"></script>	
 </body>
 </html>
