@@ -1,4 +1,4 @@
-import { normalizeBook, addToShelf, removeFromShelf, toggleRead, isOnShelf } from "./books.js";
+import { normalizeBook, addToShelf, removeFromShelf, toggleRead, isOnShelf, normalizeSubjectWork } from "./books.js";
 
 const form = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
@@ -8,13 +8,19 @@ const status = document.querySelector("#status");
 const loadMoreBtn = document.querySelector("#load-more");
 
 const API_URL = "https://openlibrary.org/search.json";
-const routes = ["/", "/search", "shelf"];
+const routes = ["/", "/search", "/shelf"];
+const GENRES = [
+  { key: "fiction", label: "Fiction" },
+  { key: "fantasy", label: "Fantasy" },
+  { key: "mystery", label: "Mystery" },
+];
 
 let page = 1;
 let lastQuery = "";
 let results = [];
 let shelf = [];
 let debounceTimer = null;
+let homeRows = [];
 
 const savedShelf = localStorage.getItem("booksearch-shelf");
 if (savedShelf) {
@@ -59,31 +65,57 @@ form.addEventListener("submit", (event) => {
 function renderResults() {
   resultsEl.innerHTML = "";
   for (const book of results) {
-  	const card = document.createElement("li");
-  	card.className = "card";
+  	resultsEl.appendChild(buildBookCard(book));
+  }
+}
 
-  	const img = document.createElement("img");
-  	img.alt = "";
-  	img.src = book.coverId
-  	  ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg`
-  	  : "placeholder.png";
-  	img.onerror = () => { img.src = "placeholder.png"; };
+function buildBookCard(book) {
+  const card = document.createElement("li");
+  card.className = "card";
 
-  	const title = document.createElement("h3");
-  	title.textContent = book.title;
+  const img = document.createElement("img");
+  img.alt = "";
+  img.src = book.coverId
+    ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg`
+    : "placeholder.png";
+  img.onerror = () => { img.src = "placeholder.png"; };
 
-  	const author = document.createElement("p");
-  	author.textContent = book.author;
+  const title = document.createElement("h3");
+  title.textContent = book.title;
 
-  	const addBtn = document.createElement("button");
-  	addBtn.type = "button";
-  	addBtn.className = "add-to-shelf";
-  	addBtn.dataset.key = book.key;
-  	addBtn.textContent = isOnShelf(shelf, book.key) ? "On shelf" : "Add to shelf";
-  	addBtn.disabled = isOnShelf(shelf, book.key);
+  const author = document.createElement("p");
+  author.textContent = book.author;
 
-  	card.append(img, title, author, addBtn);
-  	resultsEl.appendChild(card);
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "add-to-shelf";
+  addBtn.dataset.key = book.key;
+  addBtn.textContent = isOnShelf(shelf, book.key) ? "On shelf" : "Add to shelf";
+  addBtn.disabled = isOnShelf(shelf, book.key);
+
+  card.append(img, title, author, addBtn);
+  return card;
+}
+
+function renderHome() {
+  const homeEl = document.querySelector("#view-home");
+  homeEl.innerHTML = "";
+
+  for (const row of homeRows) {
+  	const section = document.createElement("div");
+  	section.className = "row";
+
+  	const heading = document.createElement("h2");
+  	heading.textContent = row.label;
+
+  	const list = document.createElement("ul");
+  	list.className = "carousel";
+  	for (const book of row.books) {
+  	  list.appendChild(buildBookCard(book));
+  	}
+
+  	section.append(heading, list);
+  	homeEl.appendChild(section);
   }
 }
 
@@ -151,17 +183,45 @@ async function runSearch(query, { append = false } = {}) {
   }
 }
 
+async function loadHome() {
+  const [trendingRes, ...genreResList] = await Promise.all([
+  	fetch("https://openlibrary.org/trending/daily.json?limit=10"),
+  	...GENRES.map((g) => fetch(`https://openlibrary.org/subjects/${g.key}.json?limit=10`)),
+  ]);
+
+  const	trendingData = await trendingRes.json();
+  const genreDataList = await Promise.all(genreResList.map((r) => r.json()));
+
+  homeRows = [
+  	{ label: "Trending", books: trendingData.works.map(normalizeBook) },
+  	...GENRES.map((g, i) => ({
+  		label: g.label,
+  		books: genreDataList[i].works.map(normalizeSubjectWork),
+  	})),
+  ];
+
+  renderHome();
+}
+
+loadHome();
+
 loadMoreBtn.addEventListener("click", () => {
   page += 1;
   runSearch(lastQuery, { append: true });
 });
 
-resultsEl.addEventListener("click", (event) => {
+document.addEventListener("click", (event) => {
   if (!event.target.matches(".add-to-shelf")) return;
-  const book = results.find((b) => b.key === event.target.dataset.key);
+  const	key = event.target.dataset.key;
+  const book = 
+    results.find((b) => b.key === key) || 
+    homeRows.flatMap((row) => row.books).find((b) => b.key === key);
+  if (!book) return;
+
   shelf = addToShelf(shelf, book, Date.now());
   renderShelf();
   renderResults();
+  renderHome();
 });
 
 shelfEl.addEventListener("click", (event) => {

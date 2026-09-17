@@ -8,6 +8,16 @@ export function normalizeBook(doc) {
   };
 }
 
+export function normalizeSubjectWork(work) {
+  return {
+  	key: work.key,
+  	title: work.title || "Untitled",
+  	author: work.authors && work.authors[0] ? work.authors[0].name : "Unknown author",
+  	year: work.first_publish_year || null,
+  	coverId: work.cover_id || null,
+  };
+}
+
 export function addToShelf(shelf, book, savedAt) {
   if (shelf.some((b) => b.key === book.key)) return shelf;
   return [...shelf, { ...book, status: "want", savedAt }];
