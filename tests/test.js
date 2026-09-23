@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { normalizeBook, addToShelf, removeFromShelf, toggleRead, isOnShelf } from "../books.js";
+import { normalizeBook, normalizeSubjectWork, addToShelf, removeFromShelf, toggleRead, isOnShelf } from "../books.js";
 
 let passed = 0;
 function test(name, fn) { fn(); passed += 1; console.log("ok -", name); }
@@ -15,6 +15,23 @@ test("normalizeBook keeps real fields when present", () => {
   const out = normalizeBook({
     key: "/works/1", title: "Dune", author_name: ["Frank Herbert"],
     first_publish_year: 1965, cover_i: 12345,
+  });
+  assert.equal(out.author, "Frank Herbert");
+  assert.equal(out.year, 1965);
+  assert.equal(out.coverId, 12345);
+});
+
+test("normalizeSubjectWork fills in defaults for missing fields", () => {
+  const out = normalizeSubjectWork({ key: "/works/1", title: "Some Book" });
+  assert.equal(out.author, "Unknown author");
+  assert.equal(out.year, null);
+  assert.equal(out.coverId, null);
+});
+
+test("normalizeSubjectWork keeps real fields when present", () => {
+  const out = normalizeSubjectWork({
+    key: "/works/1", title: "Dune", authors: [{ name: "Frank Herbert", key: "/authors/1" }],
+    first_publish_year: 1965, cover_id: 12345,
   });
   assert.equal(out.author, "Frank Herbert");
   assert.equal(out.year, 1965);

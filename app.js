@@ -133,7 +133,12 @@ function renderHome() {
   	wrap.append(prevBtn, list, nextBtn);
   	section.append(heading, wrap);
   	homeEl.appendChild(section);
-  	list.scrollLeft = scrollPositions[i] || 0;
+  });
+
+  requestAnimationFrame(() => {
+  	homeEl.querySelectorAll(".carousel").forEach((el, i) => {
+  		el.scrollLeft = scrollPositions[i] || 0;
+  	});
   });
 }
 
