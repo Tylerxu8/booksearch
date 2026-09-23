@@ -200,23 +200,32 @@ async function runSearch(query, { append = false } = {}) {
 }
 
 async function loadHome() {
-  const [trendingRes, ...genreResList] = await Promise.all([
+  const statusEl = document.querySelector("#home-status");
+  statusEl.textContent = "Loading…";
+
+  try {
+  	const [trendingRes, ...genreResList] = await Promise.all([
   	fetch("https://openlibrary.org/trending/daily.json?limit=10"),
   	...GENRES.map((g) => fetch(`https://openlibrary.org/subjects/${g.key}.json?limit=10`)),
   ]);
 
-  const	trendingData = await trendingRes.json();
-  const genreDataList = await Promise.all(genreResList.map((r) => r.json()));
+  	const	trendingData = await trendingRes.json();
+  	const genreDataList = await Promise.all(genreResList.map((r) => r.json()));
 
-  homeRows = [
-  	{ label: "Trending", books: trendingData.works.map(normalizeBook) },
-  	...GENRES.map((g, i) => ({
-  		label: g.label,
-  		books: genreDataList[i].works.map(normalizeSubjectWork),
-  	})),
-  ];
+  	homeRows = [
+  		{ label: "Trending", books: trendingData.works.map(normalizeBook) },
+  		...GENRES.map((g, i) => ({
+  			label: g.label,
+  			books: genreDataList[i].works.map(normalizeSubjectWork),
+  		})),
+  	];
 
-  renderHome();
+  	statusEl.textContent = "";
+  	renderHome();
+  } catch (error) {
+  	console.error(error);
+  	statusEl.textContent = "Couldn't load books right now. Refresh to try again.";
+  }
 }
 
 loadHome();

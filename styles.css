@@ -1,11 +1,23 @@
 *, *::before, *::after { box-sizing: border-box; }
 
+:root {
+  --bg: #ffffff;
+  --text: #1c1c1e;
+  --muted-text: #8e8e93;
+  --card-bg: #f2f2f7;
+  --tab-bg: rgba(255, 255, 255, 0.8);
+  --border: rgba(0, 0, 0, 0.1);
+  --accent: #007aff;
+}
+
 body {
   margin: 0;
   max-width: 40rem;
   padding: 0 1rem;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
 }
 
 #search-form {
@@ -80,7 +92,8 @@ body {
   margin-top: auto;
   padding: 0.35rem;
   border: 1px solid #ccc;
-  background: white;
+  background: var(--bg);
+  color: var(--text);
   border-radius: 4px;
   font: inherit;
   cursor: pointer;
@@ -136,20 +149,20 @@ body {
   justify-content: space-around;
   padding: 0.5rem 0;
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--tab-bg);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border);
 }
 
 .tab {
   text-decoration: none;
-  color: #8e8e93;
+  color: var(--muted-text);
   font-size: 0.8rem;
   text-align: center;
 }
 
 .tab.active {
-  color: #007aff;
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -169,7 +182,7 @@ main {
   	gap: 0.5rem;
   	padding-top: 1rem;
   	border-top: none;
-  	border-right: 1px solid rgba(0, 0, 0, 0.1);
+  	border-right: 1px solid var(--border);
   }
 
   .tab {
@@ -180,5 +193,17 @@ main {
   main {
   	margin-left: 13rem;
   	padding-bottom: 1rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  	--bg: #000000;
+  	--text: #f2f2f2;
+  	--muted-text: #98989d;
+  	--card-bg: #1c1c1e;
+  	--tab-bg: rgba(20, 20, 20, 0.8);
+  	--border: rgba(255, 255, 255, 0.15);
+  	--accent: #0a84ff;
   }
 }
