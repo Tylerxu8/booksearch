@@ -142,8 +142,51 @@ function renderHome() {
   });
 }
 
+function renderHomeSkeleton() {
+  const homeEl = document.querySelector("#home-rows");
+  homeEl.innerHTML = "";
+
+  for (let i = 0; i < 4; i++) {
+  	const section = document.createElement("div");
+  	section.className = "row";
+
+  	const heading = document.createElement("div");
+  	heading.className = "skeleton skeleton-heading";
+
+  	const list = document.createElement("ul");
+  	list.className = "carousel";
+  	for (let j = 0; j < 5; j++) {
+  		const card = document.createElement("li");
+  		card.className = "card skeleton-card";
+
+  		const img = document.createElement("div");
+  		img.className = "skeleton skeleton-img";
+
+  		const line1 = document.createElement("div");
+  		line1.className = "skeleton skeleton-line";
+
+  		const line2 = document.createElement("div");
+  		line2.className = "skeleton skeleton-line short";
+
+  		card.append(img, line1, line2);
+  		list.appendChild(card);
+  	}
+
+  	section.append(heading, list);
+  	homeEl.appendChild(section);
+  }
+}
+
 function renderShelf() {
   shelfEl.innerHTML = "";
+
+  if (shelf.length === 0) {
+  	const empty = document.createElement("li");
+  	empty.className = "empty-state";
+  	empty.textContent = "Your shelf is empty — search for a book to add one.";
+  	shelfEl.appendChild(empty);
+  }
+
   for (const book of shelf) {
   	const li = document.createElement("li");
 
@@ -175,7 +218,7 @@ async function runSearch(query, { append = false } = {}) {
   if (query === "") {
   	results = [];
   	renderResults();
-  	status.textContent = "";
+  	status.textContent = "Search for a book to get started.";
   	loadMoreBtn.hidden = true;
   	return;
   }
@@ -209,6 +252,7 @@ async function runSearch(query, { append = false } = {}) {
 async function loadHome() {
   const statusEl = document.querySelector("#home-status");
   statusEl.textContent = "Loading…";
+  renderHomeSkeleton();
 
   try {
   	const [trendingRes, ...genreResList] = await Promise.all([
@@ -232,6 +276,7 @@ async function loadHome() {
   } catch (error) {
   	console.error(error);
   	statusEl.textContent = "Couldn't load books right now. Refresh to try again.";
+  	document.querySelector("#home-rows").innerHTML = "";
   }
 }
 
