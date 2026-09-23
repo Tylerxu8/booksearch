@@ -189,22 +189,38 @@ function renderShelf() {
 
   for (const book of shelf) {
   	const li = document.createElement("li");
+  	li.className = "card";
+  	if (book.status === "read") li.classList.add("read");
+  	li.dataset.key = book.key;
 
-  	const status = document.createElement("input");
-  	status.type = "checkbox";
-  	status.checked = book.status === "read";
+  	const img = document.createElement("img");
+  	img.alt = "";
+  	img.src = book.coverId
+  	  ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg`
+  	  : "placeholder.png";
+  	img.onerror = () => { img.src = "placeholder.png"; };
 
-  	const title = document.createElement("span");
-  	title.className = "title";
-  	title.textContent = `${book.title} - ${book.author}`;
+  	const title = document.createElement("h3");
+  	title.textContent = book.title;
+
+  	const author = document.createElement("p");
+  	author.textContent = book.author;
+
+  	const actions = document.createElement("div");
+  	actions.className = "card-actions";
+
+  	const readBtn = document.createElement("button");
+  	readBtn.type = "button";
+  	readBtn.className = "toggle-read";
+  	readBtn.textContent = book.status === "read" ? "Read" : "Mark read";
 
   	const removeBtn = document.createElement("button");
   	removeBtn.type = "button";
   	removeBtn.className = "remove";
   	removeBtn.textContent = "Remove";
 
-  	li.dataset.key = book.key;
-  	li.append(status, title, removeBtn);
+  	actions.append(readBtn, removeBtn);
+  	li.append(img, title, author, actions);
   	shelfEl.appendChild(li);
   }
   saveShelf();
@@ -314,7 +330,7 @@ shelfEl.addEventListener("click", (event) => {
   if (!li) return;
   const key = li.dataset.key;
 
-  if (event.target.matches('input[type="checkbox"]')) {
+  if (event.target.matches(".toggle-read")) {
   	shelf = toggleRead(shelf, key);
   	renderShelf();
   }

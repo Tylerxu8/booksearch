@@ -44,25 +44,15 @@ body {
   list-style: none;
   padding: 0;
   margin: 1rem 0;
-}
-
-#shelf li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 1rem;
 }
 
 #shelf li.empty-state {
-  display: block;
-  border-bottom: none;
+  grid-column: 1 / -1;
   color: var(--muted-text);
   padding: 1rem 0;
-}
-
-#shelf li .title {
-  flex: 1;
 }
 
 .card {
@@ -87,6 +77,31 @@ body {
 .card h3 {
   font-size: 0.95rem;
   margin: 0;
+}
+
+.card.read {
+  opacity: 0.55;
+}
+
+.card.read img {
+  filter: grayscale(70%);
+}
+
+.card-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 0.35rem;
+  border: 1px solid #ccc;
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
 }
 
 .card p {
