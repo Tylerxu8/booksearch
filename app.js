@@ -98,7 +98,7 @@ function buildBookCard(book) {
 }
 
 function renderHome() {
-  const homeEl = document.querySelector("#view-home");
+  const homeEl = document.querySelector("#home-rows");
   homeEl.innerHTML = "";
 
   for (const row of homeRows) {
@@ -270,6 +270,7 @@ shelfEl.addEventListener("click", (event) => {
   	shelf = removeFromShelf(shelf, key);
   	renderShelf();
   	renderResults();
+  	renderHome();
   }
 });
 
