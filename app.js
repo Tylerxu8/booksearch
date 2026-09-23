@@ -99,9 +99,10 @@ function buildBookCard(book) {
 
 function renderHome() {
   const homeEl = document.querySelector("#home-rows");
+  const scrollPositions = [...homeEl.querySelectorAll(".carousel")].map((el) => el.scrollLeft);
   homeEl.innerHTML = "";
 
-  for (const row of homeRows) {
+  homeRows.forEach((row, i) => {
   	const section = document.createElement("div");
   	section.className = "row";
 
@@ -122,6 +123,7 @@ function renderHome() {
   	for (const book of row.books) {
   	  list.appendChild(buildBookCard(book));
   	}
+  	list.scrollLeft = scrollPositions[i] || 0;
 
   	const nextBtn = document.createElement("button");
   	nextBtn.type = "button";
@@ -132,7 +134,7 @@ function renderHome() {
   	wrap.append(prevBtn, list, nextBtn);
   	section.append(heading, wrap);
   	homeEl.appendChild(section);
-  }
+  });
 }
 
 function renderShelf() {
