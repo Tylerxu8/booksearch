@@ -60,6 +60,11 @@ body {
   border-radius: 4px;
 }
 
+.card img {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
 .card h3 {
   font-size: 0.95rem;
   margin: 0;
@@ -79,4 +84,101 @@ body {
   border-radius: 4px;
   font: inherit;
   cursor: pointer;
+}
+
+.carousel {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.25rem 0 0.75rem;
+  list-style: none;
+}
+
+.carousel .card {
+  flex: 0 0 auto;
+  width: 8rem;
+  scroll-snap-align: start;
+}
+
+.carousel-wrap {
+  position: relative;
+}
+
+.row-prev, .row-next {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.row-prev {
+  left: -0.5rem;
+}
+
+.row-next {
+  right: -0.5rem;
+}
+
+#tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  text-decoration: none;
+  color: #8e8e93;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.tab.active {
+  color: #007aff;
+  font-weight: 600;
+}
+
+main {
+  padding-bottom: 4.5rem;
+}
+
+@media (min-width: 768px) {
+  #tab-bar {
+  	top: 0;
+  	bottom: 0;
+  	right: auto;
+  	width: 13rem;
+  	flex-direction: column;
+  	justify-content: flex-start;
+  	align-items: stretch;
+  	gap: 0.5rem;
+  	padding-top: 1rem;
+  	border-top: none;
+  	border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .tab {
+  	text-align: left;
+  	padding: 0.5rem 1rem;
+  }
+
+  main {
+  	margin-left: 13rem;
+  	padding-bottom: 1rem;
+  }
 }

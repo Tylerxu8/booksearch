@@ -108,13 +108,29 @@ function renderHome() {
   	const heading = document.createElement("h2");
   	heading.textContent = row.label;
 
+  	const wrap = document.createElement("div");
+  	wrap.className = "carousel-wrap";
+
+  	const prevBtn = document.createElement("button");
+  	prevBtn.type = "button";
+  	prevBtn.className = "row-prev";
+  	prevBtn.setAttribute("aria-label", "Scroll left");
+  	prevBtn.textContent = "‹";
+
   	const list = document.createElement("ul");
   	list.className = "carousel";
   	for (const book of row.books) {
   	  list.appendChild(buildBookCard(book));
   	}
 
-  	section.append(heading, list);
+  	const nextBtn = document.createElement("button");
+  	nextBtn.type = "button";
+  	nextBtn.className = "row-next";
+  	nextBtn.setAttribute("aria-label", "Scroll right");
+  	nextBtn.textContent = "›";
+
+  	wrap.append(prevBtn, list, nextBtn);
+  	section.append(heading, wrap);
   	homeEl.appendChild(section);
   }
 }
@@ -208,6 +224,14 @@ loadHome();
 loadMoreBtn.addEventListener("click", () => {
   page += 1;
   runSearch(lastQuery, { append: true });
+});
+
+document.addEventListener("click", (event) => {
+  const carousel = event.target.closest(".carousel-wrap")?.querySelector(".carousel");
+  if (!carousel) return;
+
+  if (event.target.matches(".row-prev")) carousel.scrollBy({ left: -400, behavior: "smooth" });
+  if (event.target.matches(".row-next")) carousel.scrollBy({ left: 400, behavior: "smooth" });
 });
 
 document.addEventListener("click", (event) => {
