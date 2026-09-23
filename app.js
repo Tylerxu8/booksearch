@@ -123,7 +123,6 @@ function renderHome() {
   	for (const book of row.books) {
   	  list.appendChild(buildBookCard(book));
   	}
-  	list.scrollLeft = scrollPositions[i] || 0;
 
   	const nextBtn = document.createElement("button");
   	nextBtn.type = "button";
@@ -134,6 +133,7 @@ function renderHome() {
   	wrap.append(prevBtn, list, nextBtn);
   	section.append(heading, wrap);
   	homeEl.appendChild(section);
+  	list.scrollLeft = scrollPositions[i] || 0;
   });
 }
 
