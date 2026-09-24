@@ -5,6 +5,7 @@ export function normalizeBook(doc) {
   	author: doc.author_name ? doc.author_name[0] : "Unknown author",
   	year: doc.first_publish_year || null,
   	coverId: doc.cover_i || null,
+  	editionKey: doc.cover_edition_key || null,
   };
 }
 
@@ -15,6 +16,7 @@ export function normalizeSubjectWork(work) {
   	author: work.authors && work.authors[0] ? work.authors[0].name : "Unknown author",
   	year: work.first_publish_year || null,
   	coverId: work.cover_id || null,
+  	editionKey: work.cover_edition_key || null,
   };
 }
 

@@ -90,10 +90,12 @@ body {
 .card-actions {
   margin-top: auto;
   display: flex;
+  flex-direction: column;
   gap: 0.35rem;
 }
 
-.card-actions button {
+.card-actions button,
+.card-actions a {
   flex: 1;
   padding: 0.35rem;
   border: 1px solid #ccc;
@@ -102,23 +104,14 @@ body {
   border-radius: 4px;
   font: inherit;
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
 }
 
 .card p {
   font-size: 0.85rem;
   color: #666;
   margin: 0;
-}
-
-.add-to-shelf {
-  margin-top: auto;
-  padding: 0.35rem;
-  border: 1px solid #ccc;
-  background: var(--bg);
-  color: var(--text);
-  border-radius: 4px;
-  font: inherit;
-  cursor: pointer;
 }
 
 .carousel {
@@ -236,7 +229,7 @@ main {
   	top: 0;
   	bottom: 0;
   	right: auto;
-  	width: 13rem;
+  	width: 10rem;
   	flex-direction: column;
   	justify-content: flex-start;
   	align-items: stretch;
@@ -249,11 +242,21 @@ main {
   .tab {
   	text-align: left;
   	padding: 0.5rem 1rem;
+  	font-size: 1.1rem;
+  }
+
+  body {
+  	max-width: none;
+  }
+
+  #app-bar {
+  	margin-left: 10rem;
   }
 
   main {
-  	margin-left: 13rem;
+  	margin-left: 10rem;
   	padding-bottom: 1rem;
+  	max-width: 75rem;
   }
 }
 

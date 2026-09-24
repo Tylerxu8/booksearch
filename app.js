@@ -86,6 +86,9 @@ function buildBookCard(book) {
   const author = document.createElement("p");
   author.textContent = book.author;
 
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
   const addBtn = document.createElement("button");
   addBtn.type = "button";
   addBtn.className = "add-to-shelf";
@@ -93,7 +96,17 @@ function buildBookCard(book) {
   addBtn.textContent = isOnShelf(shelf, book.key) ? "On shelf" : "Add to shelf";
   addBtn.disabled = isOnShelf(shelf, book.key);
 
-  card.append(img, title, author, addBtn);
+  const buyLink = document.createElement("a");
+  buyLink.href = book.editionKey
+    ? `https://openlibrary.org/books/${book.editionKey}`
+    : `https://openlibrary.org${book.key}`;
+  buyLink.target = "_blank";
+  buyLink.rel = "noopener noreferrer";
+  buyLink.className = "buy-link";
+  buyLink.textContent = "Buy";
+
+  actions.append(addBtn, buyLink);
+  card.append(img, title, author, actions);
   return card;
 }
 
@@ -219,7 +232,16 @@ function renderShelf() {
   	removeBtn.className = "remove";
   	removeBtn.textContent = "Remove";
 
-  	actions.append(readBtn, removeBtn);
+  	const buyLink = document.createElement("a");
+  	buyLink.href = book.editionKey
+  	  ? `https://openlibrary.org/books/${book.editionKey}`
+  	  : `https://openlibrary.org${book.key}`;
+  	buyLink.target = "_blank";
+  	buyLink.rel = "noopener noreferrer";
+  	buyLink.className = "buy-link";
+  	buyLink.textContent = "Buy";
+
+  	actions.append(readBtn, removeBtn, buyLink);
   	li.append(img, title, author, actions);
   	shelfEl.appendChild(li);
   }

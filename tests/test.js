@@ -9,16 +9,18 @@ test("normalizeBook fills in defaults for missing fields", () => {
   assert.equal(out.author, "Unknown author");
   assert.equal(out.year, null);
   assert.equal(out.coverId, null);
+  assert.equal(out.editionKey, null);
 });
 
 test("normalizeBook keeps real fields when present", () => {
   const out = normalizeBook({
     key: "/works/1", title: "Dune", author_name: ["Frank Herbert"],
-    first_publish_year: 1965, cover_i: 12345,
+    first_publish_year: 1965, cover_i: 12345, cover_edition_key: "OL1M",
   });
   assert.equal(out.author, "Frank Herbert");
   assert.equal(out.year, 1965);
   assert.equal(out.coverId, 12345);
+  assert.equal(out.editionKey, "OL1M");
 });
 
 test("normalizeSubjectWork fills in defaults for missing fields", () => {
@@ -26,16 +28,18 @@ test("normalizeSubjectWork fills in defaults for missing fields", () => {
   assert.equal(out.author, "Unknown author");
   assert.equal(out.year, null);
   assert.equal(out.coverId, null);
+  assert.equal(out.editionKey, null);
 });
 
 test("normalizeSubjectWork keeps real fields when present", () => {
   const out = normalizeSubjectWork({
     key: "/works/1", title: "Dune", authors: [{ name: "Frank Herbert", key: "/authors/1" }],
-    first_publish_year: 1965, cover_id: 12345,
+    first_publish_year: 1965, cover_id: 12345, cover_edition_key: "OL1M",
   });
   assert.equal(out.author, "Frank Herbert");
   assert.equal(out.year, 1965);
   assert.equal(out.coverId, 12345);
+  assert.equal(out.editionKey, "OL1M");
 });
 
 test("addToShelf adds a new book with status 'want'", () => {
