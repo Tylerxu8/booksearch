@@ -25,7 +25,10 @@
   	<section id="view-search" data-route="/search" hidden>
   		<form id="search-form">
   			<label for="search-input">Search books</label>
-  			<input type="text" id="search-input" name="q" autocomplete="off">
+  			<div class="input-wrap">
+  				<input type="text" id="search-input" name="q" autocomplete="off">
+  				<button type="button" id="clear-search" aria-label="Clear search" hidden>×</button>
+  			</div>
   			<button type="submit">Search</button>
   		</form>
   		<p id="status" aria-live="polite">Search for a book to get started.</p>
@@ -34,6 +37,11 @@
   	</section>
   	<section id="view-shelf" data-route="/shelf" hidden>
   		<h2>My shelf</h2>
+  		<div class="shelf-filters" role="group" aria-label="Filter shelf">
+  			<button type="button" class="filter-btn active" data-filter="all">All</button>
+  			<button type="button" class="filter-btn" data-filter="want">Want to read</button>
+  			<button type="button" class="filter-btn" data-filter="read">Read</button>
+  		</div>
   		<ul id="shelf"></ul>
   	</section>
   </main>
@@ -42,6 +50,7 @@
 		<a href="#/search" class="tab" data-route="/search">Search</a>
 		<a href="#/shelf" class="tab" data-route="/shelf">Shelf</a>
 	</nav>
-	<script type="module" src="app.js"></script>	
+	<div id="toast" role="status" aria-live="polite"></div>
+	<script type="module" src="app.js"></script>
 </body>
 </html>

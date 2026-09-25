@@ -2,10 +2,13 @@ import { normalizeBook, addToShelf, removeFromShelf, toggleRead, isOnShelf, norm
 
 const form = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
+const clearSearchBtn = document.querySelector("#clear-search");
 const resultsEl = document.querySelector("#results");
 const shelfEl = document.querySelector("#shelf");
+const shelfFiltersEl = document.querySelector(".shelf-filters");
 const status = document.querySelector("#status");
 const loadMoreBtn = document.querySelector("#load-more");
+const toastEl = document.querySelector("#toast");
 
 const API_URL = "https://openlibrary.org/search.json";
 const routes = ["/", "/search", "/shelf"];
@@ -21,6 +24,8 @@ let results = [];
 let shelf = [];
 let debounceTimer = null;
 let homeRows = [];
+let shelfFilter = "all";
+let toastTimer = null;
 
 const savedShelf = localStorage.getItem("booksearch-shelf");
 if (savedShelf) {
@@ -55,6 +60,15 @@ showRoute();
 
 function searchUrl(query, page) {
   return `${API_URL}?q=${encodeURIComponent(query)}&page=${page}`;
+}
+
+function showToast(message) {
+  clearTimeout(toastTimer);
+  toastEl.textContent = message;
+  toastEl.classList.add("show");
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove("show");
+  }, 2500);
 }
 
 form.addEventListener("submit", (event) => {
@@ -193,14 +207,22 @@ function renderHomeSkeleton() {
 function renderShelf() {
   shelfEl.innerHTML = "";
 
-  if (shelf.length === 0) {
+  const visible = shelfFilter === "all"
+    ? shelf
+    : shelf.filter((book) => book.status === shelfFilter);
+
+  if (visible.length === 0) {
   	const empty = document.createElement("li");
   	empty.className = "empty-state";
-  	empty.textContent = "Your shelf is empty — search for a book to add one.";
+  	empty.textContent = shelf.length === 0
+  	  ? "Your shelf is empty — search for a book to add one."
+  	  : shelfFilter === "read"
+  	    ? "No books marked as read yet."
+  	    : "No books waiting to be read.";
   	shelfEl.appendChild(empty);
   }
 
-  for (const book of shelf) {
+  for (const book of visible) {
   	const li = document.createElement("li");
   	li.className = "card";
   	if (book.status === "read") li.classList.add("read");
@@ -345,6 +367,7 @@ document.addEventListener("click", (event) => {
   renderShelf();
   renderResults();
   renderHome();
+  showToast(`Added "${book.title}" to shelf`);
 });
 
 shelfEl.addEventListener("click", (event) => {
@@ -357,15 +380,35 @@ shelfEl.addEventListener("click", (event) => {
   	renderShelf();
   }
   if (event.target.matches(".remove")) {
+  	const removed = shelf.find((b) => b.key === key);
   	shelf = removeFromShelf(shelf, key);
   	renderShelf();
   	renderResults();
   	renderHome();
+  	if (removed) showToast(`Removed "${removed.title}" from shelf`);
   }
 });
 
+shelfFiltersEl.addEventListener("click", (event) => {
+  if (!event.target.matches(".filter-btn")) return;
+  shelfFilter = event.target.dataset.filter;
+  shelfFiltersEl.querySelectorAll(".filter-btn").forEach((btn) => {
+  	btn.classList.toggle("active", btn.dataset.filter === shelfFilter);
+  });
+  renderShelf();
+});
+
 input.addEventListener("input", (event) => {
+  clearSearchBtn.hidden = event.target.value === "";
   clearTimeout(debounceTimer);
   const query = event.target.value.trim();
   debounceTimer = setTimeout(() => runSearch(query), 300);
+});
+
+clearSearchBtn.addEventListener("click", () => {
+  input.value = "";
+  clearSearchBtn.hidden = true;
+  clearTimeout(debounceTimer);
+  runSearch("");
+  input.focus();
 });
