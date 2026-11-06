@@ -87,6 +87,9 @@ function buildBookCard(book) {
   const card = document.createElement("li");
   card.className = "card";
 
+  const cover = document.createElement("div");
+  cover.className = "card-cover";
+
   const img = document.createElement("img");
   img.alt = "";
   img.src = book.coverId
@@ -94,21 +97,31 @@ function buildBookCard(book) {
     : "placeholder.png";
   img.onerror = () => { img.src = "placeholder.png"; };
 
+  const saved = isOnShelf(shelf, book.key);
+  const bookmarkBtn = document.createElement("button");
+  bookmarkBtn.type = "button";
+  bookmarkBtn.className = saved ? "bookmark-btn add-to-shelf saved" : "bookmark-btn add-to-shelf";
+  bookmarkBtn.dataset.key = book.key;
+  bookmarkBtn.disabled = saved;
+  bookmarkBtn.setAttribute("aria-pressed", String(saved));
+  bookmarkBtn.setAttribute("aria-label", saved ? "On shelf" : "Add to shelf");
+  bookmarkBtn.innerHTML =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>';
+
+  const info = document.createElement("div");
+  info.className = "card-info";
+
   const title = document.createElement("h3");
   title.textContent = book.title;
 
   const author = document.createElement("p");
   author.textContent = book.author;
 
+  info.append(title, author);
+  cover.append(img, bookmarkBtn, info);
+
   const actions = document.createElement("div");
   actions.className = "card-actions";
-
-  const addBtn = document.createElement("button");
-  addBtn.type = "button";
-  addBtn.className = "add-to-shelf";
-  addBtn.dataset.key = book.key;
-  addBtn.textContent = isOnShelf(shelf, book.key) ? "On shelf" : "Add to shelf";
-  addBtn.disabled = isOnShelf(shelf, book.key);
 
   const buyLink = document.createElement("a");
   buyLink.href = book.editionKey
@@ -119,8 +132,8 @@ function buildBookCard(book) {
   buyLink.className = "buy-link";
   buyLink.textContent = "Buy";
 
-  actions.append(addBtn, buyLink);
-  card.append(img, title, author, actions);
+  actions.append(buyLink);
+  card.append(cover, actions);
   return card;
 }
 
@@ -228,6 +241,9 @@ function renderShelf() {
   	if (book.status === "read") li.classList.add("read");
   	li.dataset.key = book.key;
 
+  	const cover = document.createElement("div");
+  	cover.className = "card-cover";
+
   	const img = document.createElement("img");
   	img.alt = "";
   	img.src = book.coverId
@@ -235,11 +251,17 @@ function renderShelf() {
   	  : "placeholder.png";
   	img.onerror = () => { img.src = "placeholder.png"; };
 
+  	const info = document.createElement("div");
+  	info.className = "card-info";
+
   	const title = document.createElement("h3");
   	title.textContent = book.title;
 
   	const author = document.createElement("p");
   	author.textContent = book.author;
+
+  	info.append(title, author);
+  	cover.append(img, info);
 
   	const actions = document.createElement("div");
   	actions.className = "card-actions";
@@ -264,7 +286,7 @@ function renderShelf() {
   	buyLink.textContent = "Buy";
 
   	actions.append(readBtn, removeBtn, buyLink);
-  	li.append(img, title, author, actions);
+  	li.append(cover, actions);
   	shelfEl.appendChild(li);
   }
   saveShelf();
