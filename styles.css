@@ -7,7 +7,13 @@
   --card-bg: #f2f2f7;
   --tab-bg: rgba(255, 255, 255, 0.8);
   --border: rgba(0, 0, 0, 0.1);
-  --accent: #007aff;
+  --accent: #0f766e;
+  --radius: 0.875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1.1rem;
+  --text-lg: 1.375rem;
+  --text-xl: 2rem;
 }
 
 body {
@@ -18,6 +24,18 @@ body {
   line-height: 1.5;
   background: var(--bg);
   color: var(--text);
+}
+
+#app-bar h1 {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin: 0;
+}
+
+main h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin: 0 0 0.75rem;
 }
 
 #search-form {
@@ -72,7 +90,7 @@ body {
   color: var(--text);
   border-radius: 999px;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
   cursor: pointer;
 }
 
@@ -108,16 +126,12 @@ body {
   aspect-ratio: 2 / 3;
   object-fit: cover;
   background: #eee;
-  border-radius: 4px;
-}
-
-.card img {
+  border-radius: var(--radius);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
 }
 
 .card h3 {
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
   margin: 0;
 }
 
@@ -143,7 +157,7 @@ body {
   border: 1px solid #ccc;
   background: var(--bg);
   color: var(--text);
-  border-radius: 4px;
+  border-radius: var(--radius);
   font: inherit;
   cursor: pointer;
   text-align: center;
@@ -151,7 +165,7 @@ body {
 }
 
 .card p {
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
   color: #666;
   margin: 0;
 }
@@ -179,7 +193,7 @@ body {
   background: linear-gradient(90deg, var(--card-bg) 25%, var(--border) 50%, var(--card-bg) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
-  border-radius: 4px;
+  border-radius: var(--radius);
 }
 
 @keyframes skeleton-shimmer {
@@ -253,7 +267,7 @@ body {
 .tab {
   text-decoration: none;
   color: var(--muted-text);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   text-align: center;
 }
 
@@ -284,7 +298,7 @@ main {
   .tab {
   	text-align: left;
   	padding: 0.5rem 1rem;
-  	font-size: 1.1rem;
+  	font-size: var(--text-md);
   }
 
   body {
@@ -307,13 +321,13 @@ main {
 
 @media (prefers-color-scheme: dark) {
   :root {
-  	--bg: #000000;
+  	--bg: #0b0f0e;
   	--text: #f2f2f2;
   	--muted-text: #98989d;
-  	--card-bg: #1c1c1e;
-  	--tab-bg: rgba(20, 20, 20, 0.8);
-  	--border: rgba(255, 255, 255, 0.15);
-  	--accent: #0a84ff;
+  	--card-bg: #141a19;
+  	--tab-bg: rgba(11, 15, 14, 0.8);
+  	--border: rgba(45, 212, 191, 0.15);
+  	--accent: #2dd4bf;
   }
 }
 
@@ -326,7 +340,7 @@ main {
   color: var(--bg);
   padding: 0.6rem 1rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
   max-width: calc(100% - 2rem);
   text-align: center;
   opacity: 0;
