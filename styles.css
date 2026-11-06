@@ -8,6 +8,7 @@
   --tab-bg: rgba(255, 255, 255, 0.8);
   --border: rgba(0, 0, 0, 0.1);
   --accent: #0f766e;
+  --accent-soft: rgba(15, 118, 110, 0.12);
   --radius: 0.875rem;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -355,15 +356,31 @@ main h2 {
 }
 
 .tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius);
   text-decoration: none;
   color: var(--muted-text);
   font-size: var(--text-xs);
   text-align: center;
 }
 
+.tab-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
 .tab.active {
   color: var(--accent);
   font-weight: 600;
+  background: var(--accent-soft);
 }
 
 main {
@@ -386,9 +403,23 @@ main {
   }
 
   .tab {
+  	flex-direction: row;
+  	justify-content: flex-start;
   	text-align: left;
   	padding: 0.5rem 1rem;
   	font-size: var(--text-md);
+  	gap: 0.6rem;
+  }
+
+  .tab.active::before {
+  	content: "";
+  	position: absolute;
+  	left: 0;
+  	top: 0.3rem;
+  	bottom: 0.3rem;
+  	width: 3px;
+  	background: var(--accent);
+  	border-radius: 0 2px 2px 0;
   }
 
   body {
@@ -418,6 +449,7 @@ main {
   	--tab-bg: rgba(11, 15, 14, 0.8);
   	--border: rgba(45, 212, 191, 0.15);
   	--accent: #2dd4bf;
+  	--accent-soft: rgba(45, 212, 191, 0.15);
   }
 }
 

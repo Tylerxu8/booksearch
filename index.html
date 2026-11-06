@@ -46,9 +46,18 @@
   	</section>
   </main>
 	<nav id="tab-bar" aria-label="Primary">
-		<a href="#/" class="tab" data-route="/">Home</a>
-		<a href="#/search" class="tab" data-route="/search">Search</a>
-		<a href="#/shelf" class="tab" data-route="/shelf">Shelf</a>
+		<a href="#/" class="tab" data-route="/">
+			<svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"/></svg>
+			<span>Home</span>
+		</a>
+		<a href="#/search" class="tab" data-route="/search">
+			<svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+			<span>Search</span>
+		</a>
+		<a href="#/shelf" class="tab" data-route="/shelf">
+			<svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="3" height="18" rx="1"/><rect x="10.5" y="6" width="3" height="15" rx="1"/><rect x="17" y="3" width="3" height="18" rx="1"/></svg>
+			<span>Shelf</span>
+		</a>
 	</nav>
 	<div id="toast" role="status" aria-live="polite"></div>
 	<script type="module" src="app.js"></script>
