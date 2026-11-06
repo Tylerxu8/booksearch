@@ -48,7 +48,7 @@ main h2 {
 }
 
 #search-modal {
-  width: min(32rem, 90vw);
+  width: min(44rem, 92vw);
   max-height: min(34rem, 80vh);
   margin: auto;
   padding: 1rem;
@@ -61,8 +61,7 @@ main h2 {
 }
 
 #search-modal::backdrop {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 #search-modal #search-form {
