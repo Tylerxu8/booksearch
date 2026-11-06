@@ -9,9 +9,13 @@ const shelfFiltersEl = document.querySelector(".shelf-filters");
 const status = document.querySelector("#status");
 const loadMoreBtn = document.querySelector("#load-more");
 const toastEl = document.querySelector("#toast");
+const pageTitleEl = document.querySelector("#page-title");
+const searchModal = document.querySelector("#search-modal");
+const searchTrigger = document.querySelector("#search-trigger");
 
 const API_URL = "https://openlibrary.org/search.json";
-const routes = ["/", "/search", "/shelf"];
+const routes = ["/", "/shelf"];
+const ROUTE_LABELS = { "/": "Home", "/shelf": "My Shelf" };
 const GENRES = [
   { key: "fiction", label: "Fiction" },
   { key: "fantasy", label: "Fantasy" },
@@ -53,6 +57,18 @@ function showRoute() {
     	el.setAttribute("aria-current", el.dataset.route === route ? "page" : "false");
     }
   });
+
+  pageTitleEl.textContent = ROUTE_LABELS[route] || "";
+}
+
+function openSearchModal() {
+  searchModal.showModal();
+  searchTrigger.classList.add("active");
+  input.focus();
+}
+
+function closeSearchModal() {
+  searchModal.close();
 }
 
 window.addEventListener("hashchange", showRoute);
@@ -439,4 +455,21 @@ clearSearchBtn.addEventListener("click", () => {
   clearTimeout(debounceTimer);
   runSearch("");
   input.focus();
+});
+
+searchTrigger.addEventListener("click", openSearchModal);
+
+searchModal.addEventListener("close", () => {
+  searchTrigger.classList.remove("active");
+});
+
+searchModal.addEventListener("click", (event) => {
+  if (event.target === searchModal) closeSearchModal();
+});
+
+document.addEventListener("keydown", (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    openSearchModal();
+  }
 });
