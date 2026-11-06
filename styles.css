@@ -233,6 +233,30 @@ main h2 {
   text-decoration: none;
 }
 
+.row {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.row-header h2 {
+  margin: 0;
+}
+
+.row-nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
 .carousel {
   display: flex;
   gap: 0.75rem;
@@ -240,16 +264,18 @@ main h2 {
   scroll-snap-type: x mandatory;
   padding: 0.25rem 0 0.75rem;
   list-style: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
 }
 
 .carousel .card {
   flex: 0 0 auto;
   width: 8rem;
   scroll-snap-align: start;
-}
-
-.carousel-wrap {
-  position: relative;
 }
 
 .skeleton {
@@ -286,31 +312,32 @@ main h2 {
 
 .row-prev, .row-next {
   display: none;
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  border: none;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
   border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  font-size: 1.2rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 1.1rem;
+  line-height: 1;
   cursor: pointer;
 }
 
 @media (hover: hover) {
   .row-prev, .row-next {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
-}
 
-.row-prev {
-  left: -0.5rem;
-}
-
-.row-next {
-  right: -0.5rem;
+  .row:hover .row-prev,
+  .row:hover .row-next,
+  .row:focus-within .row-prev,
+  .row:focus-within .row-next {
+    opacity: 1;
+  }
 }
 
 #tab-bar {

@@ -146,11 +146,14 @@ function renderHome() {
   	const section = document.createElement("div");
   	section.className = "row";
 
+  	const header = document.createElement("div");
+  	header.className = "row-header";
+
   	const heading = document.createElement("h2");
   	heading.textContent = row.label;
 
-  	const wrap = document.createElement("div");
-  	wrap.className = "carousel-wrap";
+  	const nav = document.createElement("div");
+  	nav.className = "row-nav";
 
   	const prevBtn = document.createElement("button");
   	prevBtn.type = "button";
@@ -158,20 +161,22 @@ function renderHome() {
   	prevBtn.setAttribute("aria-label", "Scroll left");
   	prevBtn.textContent = "‹";
 
-  	const list = document.createElement("ul");
-  	list.className = "carousel";
-  	for (const book of row.books) {
-  	  list.appendChild(buildBookCard(book));
-  	}
-
   	const nextBtn = document.createElement("button");
   	nextBtn.type = "button";
   	nextBtn.className = "row-next";
   	nextBtn.setAttribute("aria-label", "Scroll right");
   	nextBtn.textContent = "›";
 
-  	wrap.append(prevBtn, list, nextBtn);
-  	section.append(heading, wrap);
+  	nav.append(prevBtn, nextBtn);
+  	header.append(heading, nav);
+
+  	const list = document.createElement("ul");
+  	list.className = "carousel";
+  	for (const book of row.books) {
+  	  list.appendChild(buildBookCard(book));
+  	}
+
+  	section.append(header, list);
   	homeEl.appendChild(section);
   });
 
@@ -370,7 +375,8 @@ loadMoreBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (event) => {
-  const carousel = event.target.closest(".carousel-wrap")?.querySelector(".carousel");
+  if (!event.target.matches(".row-prev, .row-next")) return;
+  const carousel = event.target.closest(".row")?.querySelector(".carousel");
   if (!carousel) return;
 
   if (event.target.matches(".row-prev")) carousel.scrollBy({ left: -400, behavior: "smooth" });
