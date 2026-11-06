@@ -12,14 +12,33 @@ const toastEl = document.querySelector("#toast");
 const pageTitleEl = document.querySelector("#page-title");
 const searchModal = document.querySelector("#search-modal");
 const searchTrigger = document.querySelector("#search-trigger");
+const genreListEl = document.querySelector("#genre-list");
+const genreListView = document.querySelector("#genre-list-view");
+const genreDetailView = document.querySelector("#genre-detail-view");
+const genreDetailTitle = document.querySelector("#genre-detail-title");
+const genreResultsEl = document.querySelector("#genre-results");
+const genreLoadMoreBtn = document.querySelector("#genre-load-more");
+const genreBackBtn = document.querySelector("#genre-back");
 
 const API_URL = "https://openlibrary.org/search.json";
-const routes = ["/", "/shelf"];
-const ROUTE_LABELS = { "/": "Home", "/shelf": "My Shelf" };
+const routes = ["/", "/shelf", "/genres"];
+const ROUTE_LABELS = { "/": "Home", "/shelf": "My Shelf", "/genres": "Genres" };
+const GENRE_PAGE_SIZE = 20;
 const GENRES = [
   { key: "fiction", label: "Fiction" },
   { key: "fantasy", label: "Fantasy" },
   { key: "mystery", label: "Mystery" },
+];
+const ALL_GENRES = [
+  ...GENRES,
+  { key: "romance", label: "Romance" },
+  { key: "horror", label: "Horror" },
+  { key: "biography", label: "Biography" },
+  { key: "thriller", label: "Thriller" },
+  { key: "young_adult", label: "Young Adult" },
+  { key: "science_fiction", label: "Science Fiction" },
+  { key: "poetry", label: "Poetry" },
+  { key: "self_help", label: "Self-Help" },
 ];
 
 let page = 1;
@@ -30,6 +49,10 @@ let debounceTimer = null;
 let homeRows = [];
 let shelfFilter = "all";
 let toastTimer = null;
+let activeGenre = null;
+let genreOffset = 0;
+let genreWorkCount = 0;
+let genreBooks = [];
 
 const savedShelf = localStorage.getItem("booksearch-shelf");
 if (savedShelf) {
@@ -385,6 +408,79 @@ async function loadHome() {
 
 loadHome();
 
+function renderGenreList() {
+  genreListEl.innerHTML = "";
+  for (const genre of ALL_GENRES) {
+  	const tile = document.createElement("button");
+  	tile.type = "button";
+  	tile.className = "genre-tile";
+  	tile.dataset.genre = genre.key;
+  	tile.textContent = genre.label;
+  	genreListEl.appendChild(tile);
+  }
+}
+
+renderGenreList();
+
+function renderGenreResults() {
+  genreResultsEl.innerHTML = "";
+  for (const book of genreBooks) {
+  	genreResultsEl.appendChild(buildBookCard(book));
+  }
+}
+
+async function loadGenreBooks() {
+  try {
+  	const response = await fetch(`https://openlibrary.org/subjects/${activeGenre.key}.json?limit=${GENRE_PAGE_SIZE}&offset=${genreOffset}`);
+  	if (!response.ok) throw new Error(`request failed with status ${response.status}`);
+
+  	const data = await response.json();
+  	const newBooks = data.works.map(normalizeSubjectWork);
+  	genreBooks = genreOffset === 0 ? newBooks : [...genreBooks, ...newBooks];
+  	genreWorkCount = data.work_count || 0;
+  	renderGenreResults();
+
+  	genreLoadMoreBtn.hidden = genreBooks.length >= genreWorkCount;
+  } catch (error) {
+  	console.error(error);
+  }
+}
+
+function openGenre(genreKey) {
+  const genre = ALL_GENRES.find((g) => g.key === genreKey);
+  if (!genre) return;
+
+  activeGenre = genre;
+  genreOffset = 0;
+  genreWorkCount = 0;
+  genreBooks = [];
+
+  genreDetailTitle.textContent = genre.label;
+  genreListView.hidden = true;
+  genreDetailView.hidden = false;
+
+  loadGenreBooks();
+}
+
+function closeGenre() {
+  activeGenre = null;
+  genreDetailView.hidden = true;
+  genreListView.hidden = false;
+}
+
+genreListEl.addEventListener("click", (event) => {
+  const tile = event.target.closest(".genre-tile");
+  if (!tile) return;
+  openGenre(tile.dataset.genre);
+});
+
+genreBackBtn.addEventListener("click", closeGenre);
+
+genreLoadMoreBtn.addEventListener("click", () => {
+  genreOffset += GENRE_PAGE_SIZE;
+  loadGenreBooks();
+});
+
 loadMoreBtn.addEventListener("click", () => {
   page += 1;
   runSearch(lastQuery, { append: true });
@@ -402,15 +498,17 @@ document.addEventListener("click", (event) => {
 document.addEventListener("click", (event) => {
   if (!event.target.matches(".add-to-shelf")) return;
   const	key = event.target.dataset.key;
-  const book = 
-    results.find((b) => b.key === key) || 
-    homeRows.flatMap((row) => row.books).find((b) => b.key === key);
+  const book =
+    results.find((b) => b.key === key) ||
+    homeRows.flatMap((row) => row.books).find((b) => b.key === key) ||
+    genreBooks.find((b) => b.key === key);
   if (!book) return;
 
   shelf = addToShelf(shelf, book, Date.now());
   renderShelf();
   renderResults();
   renderHome();
+  renderGenreResults();
   showToast(`Added "${book.title}" to shelf`);
 });
 
@@ -429,6 +527,7 @@ shelfEl.addEventListener("click", (event) => {
   	renderShelf();
   	renderResults();
   	renderHome();
+  	renderGenreResults();
   	if (removed) showToast(`Removed "${removed.title}" from shelf`);
   }
 });

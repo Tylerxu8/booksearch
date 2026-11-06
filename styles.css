@@ -146,6 +146,51 @@ main h2 {
   padding: 1rem 0;
 }
 
+#genre-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.genre-tile {
+  padding: 1.25rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.genre-tile:hover {
+  border-color: var(--accent);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  padding: 0;
+}
+
+#genre-results {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 1rem;
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -427,7 +472,7 @@ main {
   	bottom: 1rem;
   	left: 1rem;
   	right: auto;
-  	width: 10rem;
+  	width: 13rem;
   	flex-direction: column;
   	justify-content: flex-start;
   	align-items: stretch;
@@ -467,6 +512,7 @@ main {
   	border-bottom: 1px solid var(--border);
   	font-size: var(--text-lg);
   	font-weight: 700;
+  	white-space: nowrap;
   }
 
   .brand-icon {
@@ -486,15 +532,15 @@ main {
   }
 
   #app-bar {
-  	padding-left: 12rem;
-  	max-width: 87rem;
+  	padding-left: 15rem;
+  	max-width: 90rem;
   	margin: 0 auto;
   }
 
   main {
-  	padding-left: 12rem;
+  	padding-left: 15rem;
   	padding-bottom: 1rem;
-  	max-width: 87rem;
+  	max-width: 90rem;
   	margin: 0 auto;
   }
 }

@@ -32,6 +32,18 @@
   		</div>
   		<ul id="shelf"></ul>
   	</section>
+  	<section id="view-genres" data-route="/genres" hidden>
+  		<div id="genre-list-view">
+  			<h2>Genres</h2>
+  			<div id="genre-list"></div>
+  		</div>
+  		<div id="genre-detail-view" hidden>
+  			<button type="button" id="genre-back" class="back-link">‹ All genres</button>
+  			<h2 id="genre-detail-title"></h2>
+  			<ul id="genre-results"></ul>
+  			<button type="button" id="genre-load-more" hidden>Load more</button>
+  		</div>
+  	</section>
   </main>
   <dialog id="search-modal" aria-label="Search">
   	<form id="search-form">
@@ -62,6 +74,10 @@
 		<a href="#/shelf" class="tab" data-route="/shelf">
 			<svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="3" height="18" rx="1"/><rect x="10.5" y="6" width="3" height="15" rx="1"/><rect x="17" y="3" width="3" height="18" rx="1"/></svg>
 			<span>Shelf</span>
+		</a>
+		<a href="#/genres" class="tab" data-route="/genres">
+			<svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+			<span>Genres</span>
 		</a>
 	</nav>
 	<div id="toast" role="status" aria-live="polite"></div>
